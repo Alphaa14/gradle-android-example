@@ -75,6 +75,7 @@ pipeline {
         keyStoreId: "81c76f5a-8868-4c14-b067-ed36bf497a8e",
         keyAlias: "",
         apksToSign: "**/*-unsigned.apk"
+        )
       //}
     }
     }
