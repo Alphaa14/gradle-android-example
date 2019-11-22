@@ -71,50 +71,39 @@ pipeline {
         sh './gradlew clean assembleRelease'
       }
     }
-    stage("sign apk"){
-      //withCredentials([certificate(aliasVariable: '', credentialsId: 'certificate_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
-        steps {
-        signAndroidApks (
-        keyStoreId: "81c76f5a-8868-4c14-b067-ed36bf497a8e",
-        keyAlias: "",
-        apksToSign: "**/*-unsigned.apk"
-        )}
-      //}
-    }
-    }
-    // stage('Deploy') {
-    //   environment {
-    //     // Assuming a file credential has been added to Jenkins, with the ID 'my-app-signing-keystore',
-    //     // this will export an environment variable during the build, pointing to the absolute path of
-    //     // the stored Android keystore file.  When the build ends, the temporarily file will be removed.
-    //     SIGNING_KEYSTORE = credentials('certificate_P12_ID')
-
-    //     // Similarly, the value of this variable will be a password stored by the Credentials Plugin
-    //     SIGNING_KEY_PASSWORD = credentials('certificate_content')
-    //   }
-    //   steps {
-    //     // Build the app in release mode, and sign the APK using the environment variables
-    //     sh './gradlew clean assembleRelease'
-
-    //     // Archive the APKs so that they can be downloaded from Jenkins
-    //     archiveArtifacts '**/*.apk'
-
-    //     // Upload the APK to Google Play
-    //     // androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/*-release.apk', trackName: 'beta'
-    //   }
+    // stage("sign apk"){
+    //   //withCredentials([certificate(aliasVariable: '', credentialsId: 'certificate_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
+    //     steps {
+    //     signAndroidApks (
+    //     keyStoreId: "81c76f5a-8868-4c14-b067-ed36bf497a8e",
+    //     keyAlias: "",
+    //     apksToSign: "**/*-unsigned.apk"
+    //     )}
+    //   //}
     // }
-  //  }
-    post {
-      success {
-          // Notify if the upload succeeded
-          mail to: 'jorgeribeiro14@gmail.com', subject: 'New build available!', body: 'Check it out!'
-        }
-        failure {
-       // Notify developer team of the failure
-       mail to: 'jorgeribeiro14@gmail.com', subject: 'Oops!', body: "Build failed;"  /* ${env.BUILD_NUMBER}  ${env.BUILD_URL}*/
-     }
-    }
+    stage('Deploy') {
+      environment {
+        // Assuming a file credential has been added to Jenkins, with the ID 'my-app-signing-keystore',
+        // this will export an environment variable during the build, pointing to the absolute path of
+        // the stored Android keystore file.  When the build ends, the temporarily file will be removed.
+        SIGNING_KEYSTORE = credentials('certificate_P12_ID')
 
+        // Similarly, the value of this variable will be a password stored by the Credentials Plugin
+        SIGNING_KEY_PASSWORD = credentials('certificate_content')
+      }
+      steps {
+        // Build the app in release mode, and sign the APK using the environment variables
+        sh './gradlew clean assembleRelease'
+
+        // Archive the APKs so that they can be downloaded from Jenkins
+        archiveArtifacts '**/*.apk'
+
+        // Upload the APK to Google Play
+        // androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/*-release.apk', trackName: 'beta'
+      }
+    }
+  }
+}
 
 // -----------------------------------/Correct Pipeline Workflow----------------------------------------------------------
 
@@ -170,4 +159,4 @@ pipeline {
                 // }
             // }
         // }
-  }
+
