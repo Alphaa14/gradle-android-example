@@ -61,6 +61,12 @@ pipeline {
         // Compile the app and its dependencies
         sh './gradlew compileDebugSources'
       }
+      post {
+        success {
+          // Notify if the upload succeeded
+          mail to: 'jorgeribeiro14@gmail.com', subject: 'New build available!', body: 'Check it out!'
+        }
+      }
     }
     stage('Unit test') {
       steps {
@@ -84,22 +90,22 @@ pipeline {
       steps {
         // Run Lint and analyse the results
         sh './gradlew lintDebug'
-        androidLint pattern: '**/lint-results-*.xml'
+        //androidLint pattern: '**/lint-results-*.xml'
       }
     }
     stage('Deploy') {
       when {
         // Only execute this stage when building from the `beta` branch
-        branch 'beta'
+        branch 'master'
       }
       environment {
         // Assuming a file credential has been added to Jenkins, with the ID 'my-app-signing-keystore',
         // this will export an environment variable during the build, pointing to the absolute path of
         // the stored Android keystore file.  When the build ends, the temporarily file will be removed.
-        SIGNING_KEYSTORE = credentials('my-app-signing-keystore')
+        SIGNING_KEYSTORE = credentials('certificate_P12_ID')
 
         // Similarly, the value of this variable will be a password stored by the Credentials Plugin
-        SIGNING_KEY_PASSWORD = credentials('my-app-signing-password')
+        SIGNING_KEY_PASSWORD = credentials('certificate_content')
       }
       steps {
         // Build the app in release mode, and sign the APK using the environment variables
@@ -109,22 +115,22 @@ pipeline {
         archiveArtifacts '**/*.apk'
 
         // Upload the APK to Google Play
-        androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/*-release.apk', trackName: 'beta'
+        // androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/*-release.apk', trackName: 'beta'
       }
-//       post {
-//         success {
-//           // Notify if the upload succeeded
-//           mail to: 'beta-testers@example.com', subject: 'New build available!', body: 'Check it out!'
-//         }
-//       }
-//     }
-//   }
-//   post {
-//     failure {
-//       // Notify developer team of the failure
-//       mail to: 'android-devs@example.com', subject: 'Oops!', body: "Build ${env.BUILD_NUMBER} failed; ${env.BUILD_URL}"
-//     }
-//   }
+      post {
+        success {
+          // Notify if the upload succeeded
+          mail to: 'jorgeribeiro14@gmail.com', subject: 'New build available!', body: 'Check it out!'
+        }
+      }
+    }
+  // }
+  // post {
+  //   failure {
+  //     // Notify developer team of the failure
+  //     mail to: 'android-devs@example.com', subject: 'Oops!', body: "Build ${env.BUILD_NUMBER} failed; ${env.BUILD_URL}"
+  //   }
+  // }
 
 // -----------------------------------/Correct Pipeline Workflow----------------------------------------------------------
 
@@ -181,5 +187,4 @@ pipeline {
             // }
         // }
     }
-}
 }
