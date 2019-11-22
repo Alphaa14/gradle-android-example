@@ -109,13 +109,12 @@ pipeline {
           // Notify if the upload succeeded
           mail to: 'jorgeribeiro14@gmail.com', subject: 'New build available!', body: 'Check it out!'
         }
-      }
-    post {
-      failure {
+        failure {
        // Notify developer team of the failure
        mail to: 'jorgeribeiro14@gmail.com', subject: 'Oops!', body: "Build failed;"  /* ${env.BUILD_NUMBER}  ${env.BUILD_URL}*/
      }
-   }
+    }
+
 
 // -----------------------------------/Correct Pipeline Workflow----------------------------------------------------------
 
