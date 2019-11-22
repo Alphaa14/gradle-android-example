@@ -17,21 +17,21 @@ pipeline {
     stages
     {
 
-        stage("Clean")
-        {
-            steps{
-                //sh "gradle --version"
-                // sh "./gradlew clean" //run a gradle task
-                echo "The build stage passed..."
-            }
-        }
-        stage("Check Gradle Tasks") {
-            steps{
-                echo "Gradle Tasks..."
-                // sh "./gradlew tasks"
-                echo "----------------------------------------------"
-            }
-        }
+        // stage("Clean")
+        // {
+        //     steps{
+        //         //sh "gradle --version"
+        //         // sh "./gradlew clean" //run a gradle task
+        //         echo "The build stage passed..."
+        //     }
+        // }
+        // stage("Check Gradle Tasks") {
+        //     steps{
+        //         echo "Gradle Tasks..."
+        //         // sh "./gradlew tasks"
+        //         echo "----------------------------------------------"
+        //     }
+        // }
 // -------------------Correct Pipeline workflow -----------------------
 
     stage("Compile") {
@@ -77,6 +77,7 @@ pipeline {
         apksToSign: "**/*-unsigned.apk"
       //}
     }
+    }
     // stage('Deploy') {
     //   environment {
     //     // Assuming a file credential has been added to Jenkins, with the ID 'my-app-signing-keystore',
@@ -98,7 +99,7 @@ pipeline {
     //     // androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/*-release.apk', trackName: 'beta'
     //   }
     // }
-   }
+  //  }
     post {
       success {
           // Notify if the upload succeeded
@@ -166,5 +167,4 @@ pipeline {
                 // }
             // }
         // }
-    }
-}
+  }
