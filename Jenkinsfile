@@ -47,11 +47,11 @@ pipeline {
         //androidLint pattern: '**/lint-results-*.xml'
       }
     }
-    stage("build unsigned apk"){
-      steps {
-        //sh './gradlew clean assembleRelease'
-      }
-    }
+    // stage("build unsigned apk"){
+    //   steps {
+    //      sh './gradlew clean assembleRelease'
+    //   }
+    // }
     // stage("sign apk"){
     //   //withCredentials([certificate(aliasVariable: '', credentialsId: 'certificate_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
     //     steps {
