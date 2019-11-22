@@ -5,7 +5,6 @@ pipeline {
     environment {
         ANDROID_HOME = tool name: 'androidSdk'
         // GRADLE_OPTS = tool name: "alpine-pkg-glibc"
-        
     }
     tools {
        gradle "gradle562"
@@ -16,24 +15,6 @@ pipeline {
     }
     stages
     {
-
-        // stage("Clean")
-        // {
-        //     steps{
-        //         //sh "gradle --version"
-        //         // sh "./gradlew clean" //run a gradle task
-        //         echo "The build stage passed..."
-        //     }
-        // }
-        // stage("Check Gradle Tasks") {
-        //     steps{
-        //         echo "Gradle Tasks..."
-        //         // sh "./gradlew tasks"
-        //         echo "----------------------------------------------"
-        //     }
-        // }
-// -------------------Correct Pipeline workflow -----------------------
-
     stage("Compile") {
       steps {
         // Compile the app and its dependencies
@@ -56,7 +37,7 @@ pipeline {
         sh "./gradlew assembleDebug"
 
         // Archive the APKs so that they can be downloaded from Jenkins
-        archiveArtifacts "**/*.apk"
+        archiveArtifacts "**/*.apk" // TO REMOVE
       }
     }
     stage("Static analysis") {
@@ -68,7 +49,7 @@ pipeline {
     }
     stage("build unsigned apk"){
       steps {
-        sh './gradlew clean assembleRelease'
+        //sh './gradlew clean assembleRelease'
       }
     }
     // stage("sign apk"){
@@ -86,17 +67,18 @@ pipeline {
         // Assuming a file credential has been added to Jenkins, with the ID 'my-app-signing-keystore',
         // this will export an environment variable during the build, pointing to the absolute path of
         // the stored Android keystore file.  When the build ends, the temporarily file will be removed.
-        SIGNING_KEYSTORE = credentials('certificate_P12_ID')
+        SIGNING_KEYSTORE = "Hello"//credentials('certificate_content')
 
         // Similarly, the value of this variable will be a password stored by the Credentials Plugin
-        SIGNING_KEY_PASSWORD = credentials('certificate_password')
+        SIGNING_KEY_PASSWORD = "Hello"
       }
       steps {
         // Build the app in release mode, and sign the APK using the environment variables
-        sh './gradlew clean assembleRelease'
+        //sh "echo ${SIGNING_KEYSTORE} AND  ${SIGNING_KEY_PASSWORD} "
+        sh "./gradlew clean assembleRelease"
 
         // Archive the APKs so that they can be downloaded from Jenkins
-        archiveArtifacts '**/*.apk'
+        archiveArtifacts '**/*.apk'// TO REMOVE
 
         // Upload the APK to Google Play
         // androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/*-release.apk', trackName: 'beta'
@@ -159,4 +141,3 @@ pipeline {
                 // }
             // }
         // }
-
