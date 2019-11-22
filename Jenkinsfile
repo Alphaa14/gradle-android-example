@@ -89,7 +89,7 @@ pipeline {
         SIGNING_KEYSTORE = credentials('certificate_P12_ID')
 
         // Similarly, the value of this variable will be a password stored by the Credentials Plugin
-        SIGNING_KEY_PASSWORD = credentials('certificate_content')
+        SIGNING_KEY_PASSWORD = credentials('certificate_password')
       }
       steps {
         // Build the app in release mode, and sign the APK using the environment variables
