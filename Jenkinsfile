@@ -43,13 +43,13 @@ pipeline {
         //         androidLint pattern: '**/lint-results-*.xml'
         //     }
         // }
-        stage("BUILD") {
-            steps{
-                echo "Assemble"
-                sh './gradlew build assembleRelease' //run a gradle task
+        // stage("BUILD") {
+        //     steps{
+        //         echo "Assemble"
+        //         sh './gradlew build assembleRelease' //run a gradle task
 
-            }
-        }
+        //     }
+        // }
 // -------------------Correct Pipeline workflow -----------------------
 //   options {
 //     // Stop the build early in case of compile or test failures
@@ -181,4 +181,5 @@ pipeline {
             // }
         // }
     }
+}
 }
