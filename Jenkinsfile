@@ -74,7 +74,9 @@ pipeline {
       }
       steps {
         // Build the app in release mode, and sign the APK using the environment variables
-        //sh "echo ${SIGNING_KEYSTORE} AND  ${SIGNING_KEY_PASSWORD} "
+        
+        echo "${SIGNING_KEYSTORE}"
+        echo "${SIGNING_KEY_PASSWORD}"
         sh "./gradlew clean assembleRelease"
 
         // Archive the APKs so that they can be downloaded from Jenkins
