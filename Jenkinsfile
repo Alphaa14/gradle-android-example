@@ -4,6 +4,7 @@ pipeline {
     } 
     environment {
         ANDROID_HOME = tool name: 'androidSdk'
+        
     }
     tools {
        gradle "gradle562"
@@ -19,14 +20,14 @@ pipeline {
         {
             steps{
                 sh '''gradle --version'''
-                sh './gradlew clean' //run a gradle task
+                // sh './gradlew clean' //run a gradle task
                 echo "The build stage passed..."
             }
         }
         stage("Check Gradle Tasks") {
             steps{
                 echo "Gradle Tasks..."
-                sh './gradlew tasks'
+                // sh './gradlew tasks'
                 echo "----------------------------------------------"
             }
         }
@@ -60,12 +61,8 @@ pipeline {
       steps {
         // Compile the app and its dependencies
         sh './gradlew compileDebugSources'
-      }
-      post {
-        success {
-          // Notify if the upload succeeded
-          mail to: 'jorgeribeiro14@gmail.com', subject: 'New build available!', body: 'Check it out!'
-        }
+        sh "GRADLE_OPTS=-Dgradle.user.home=/home/jenkins/agent/gradle ./gradlew -Dorg.gradle.daemon=false --no-daemon compileDebugSources --stacktrace"
+
       }
     }
     stage('Unit test') {
@@ -94,10 +91,6 @@ pipeline {
       }
     }
     stage('Deploy') {
-      when {
-        // Only execute this stage when building from the `beta` branch
-        branch 'master'
-      }
       environment {
         // Assuming a file credential has been added to Jenkins, with the ID 'my-app-signing-keystore',
         // this will export an environment variable during the build, pointing to the absolute path of
