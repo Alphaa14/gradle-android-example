@@ -67,15 +67,18 @@ pipeline {
       }
     }
     stage("build unsigned apk"){
+      steps {
         sh './gradlew clean assembleRelease'
+      }
     }
     stage("sign apk"){
       //withCredentials([certificate(aliasVariable: '', credentialsId: 'certificate_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
+        steps {
         signAndroidApks (
         keyStoreId: "81c76f5a-8868-4c14-b067-ed36bf497a8e",
         keyAlias: "",
         apksToSign: "**/*-unsigned.apk"
-        )
+        )}
       //}
     }
     }
