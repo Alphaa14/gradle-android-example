@@ -13,6 +13,7 @@ pipeline {
         // Stop the build early in case of compile or test failures
         skipStagesAfterUnstable()
     }
+  
     stages
     {
     stage("Compile") {
@@ -37,7 +38,7 @@ pipeline {
         sh "./gradlew assembleDebug"
 
         // Archive the APKs so that they can be downloaded from Jenkins
-        archiveArtifacts "**/*.apk" // TO REMOVE
+        //archiveArtifacts "**/*.apk" // TO REMOVE
       }
     }
     stage("Static analysis") {
@@ -47,99 +48,28 @@ pipeline {
         //androidLint pattern: '**/lint-results-*.xml'
       }
     }
-    // stage("build unsigned apk"){
-    //   steps {
-    //      sh './gradlew clean assembleRelease'
-    //   }
-    // }
-    // stage("sign apk"){
-    //   //withCredentials([certificate(aliasVariable: '', credentialsId: 'certificate_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
-    //     steps {
-    //     signAndroidApks (
-    //     keyStoreId: "81c76f5a-8868-4c14-b067-ed36bf497a8e",
-    //     keyAlias: "",
-    //     apksToSign: "**/*-unsigned.apk"
-    //     )}
-    //   //}
-    // }
-    stage('Deploy') {
-      environment {
-        // Assuming a file credential has been added to Jenkins, with the ID 'my-app-signing-keystore',
-        // this will export an environment variable during the build, pointing to the absolute path of
-        // the stored Android keystore file.  When the build ends, the temporarily file will be removed.
-        SIGNING_KEYSTORE = "Hello"//credentials('certificate_content')
-
-        // Similarly, the value of this variable will be a password stored by the Credentials Plugin
-        SIGNING_KEY_PASSWORD = "Hello"
-      }
-      steps {
-        // Build the app in release mode, and sign the APK using the environment variables
-        
-        echo "${SIGNING_KEYSTORE}"
-        echo "${SIGNING_KEY_PASSWORD}"
-        sh "./gradlew clean assembleRelease"
-
-        // Archive the APKs so that they can be downloaded from Jenkins
-        archiveArtifacts '**/*.apk'// TO REMOVE
-
-        // Upload the APK to Google Play
-        // androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/*-release.apk', trackName: 'beta'
+    stage("Signing APK"){
+      steps{
+          gradle {
+              useWrapper true
+              // Build the app in release mode
+              tasks 'clean assembleRelease'
+          }
+          echo "Signing APK"
+          //withCredentials([certificate(aliasVariable: 'MulticertCertificate', credentialsId: 'certificateTest_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
+          signAndroidApks (
+              keyStoreId: "certificateTest_P12_ID",
+              keyAlias: "",
+              apksToSign: "**/*-unsigned.apk"
+              //uncomment the following line to output the signed APK to a separate directory as described above
+              //signedApkMapping: [ $class: UnsignedApkBuilderDirMapping ]
+              //uncomment the following line to output the signed APK as a sibling of the unsigned APK, as described above, or just omit signedApkMapping
+              //you can override these within the script if necessary
+              //androidHome: env.ANDROID_HOME
+              //zipalignPath: env.ANDROID_ZIPALIGN
+          )
       }
     }
   }
 }
 
-// -----------------------------------/Correct Pipeline Workflow----------------------------------------------------------
-
-
-
-
-        // stage("ASSEMBLE") {
-        //     steps{
-        //         echo "Assemble"
-        //         sh './gradlew assemble' //run a gradle task
-
-        //     }
-        // }
-        // stage('Deploy') {
-            // steps {
-            //   script {                                                        
-                // if (currentBuild.result == null         
-                    // || currentBuild.result == 'SUCCESS') {  
-                //    if(env.BRANCH_NAME ==~ /master/) {
-                    //  Deploy when the committed branch is master (we use fastlane to complete this)     
-                        //  sh 'fastlane app_deploy' 
-                    // }
-                //   }
-                // }
-            // }
-        // }
-        // post {
-            // always {
-            //   archiveArtifacts(allowEmptyArchive: true, artifacts: 'app/build/outputs/apk/production/release/*.apk')      // And kill the emulator?
-            //   sh 'adb emu kill'
-            // }
-        // }
-        // stage("Signing APK"){
-            // steps{
-                // gradle {
-                    // rootBuildScriptDir 'myApp'
-                    // useWrapper true
-                    // tasks 'clean assembleRelease'
-                // }
-                // echo "Signing APK"
-                // withCredentials([certificate(aliasVariable: 'MulticertCertificate', credentialsId: 'certificate_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
-                    // signAndroidApks (
-                        // keyStoreId: "myApp.signerKeyStore",
-                        // keyAlias: "myTeam",
-                        // apksToSign: "**/*-unsigned.apk"
-                        // uncomment the following line to output the signed APK to a separate directory as described above
-                        // signedApkMapping: [ $class: UnsignedApkBuilderDirMapping ]
-                        // uncomment the following line to output the signed APK as a sibling of the unsigned APK, as described above, or just omit signedApkMapping
-                        // you can override these within the script if necessary
-                        // androidHome: env.ANDROID_HOME
-                        // zipalignPath: env.ANDROID_ZIPALIGN
-                    // )
-                // }
-            // }
-        // }
