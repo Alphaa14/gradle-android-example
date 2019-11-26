@@ -4,7 +4,7 @@ pipeline {
     } 
     environment {
         ANDROID_HOME = tool name: 'androidSdk'
-        GLIBC = tool name: "alpine-pkg-glibc"
+        //GLIBC = tool name: "alpine-pkg-glibc"
     }
     tools {
        gradle "gradle562"
