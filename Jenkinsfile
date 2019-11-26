@@ -4,7 +4,7 @@ pipeline {
     } 
     environment {
         ANDROID_HOME = tool name: 'androidSdk'
-        GLIBC = tool name: "alpine-pkg-glibc"
+        // GLIBC = tool name: "alpine-pkg-glibc"
     }
     tools {
        gradle "gradle562"
@@ -50,11 +50,8 @@ pipeline {
     }
     stage("Signing APK"){
       steps{
-          gradle {
-              useWrapper true
-              // Build the app in release mode
-              tasks 'clean assembleRelease'
-          }
+
+          sh "./gradlew clean assembleRelease"
           echo "Signing APK"
           //withCredentials([certificate(aliasVariable: 'MulticertCertificate', credentialsId: 'certificateTest_P12_ID', keystoreVariable: 'certificate_content', passwordVariable: 'certificate_password')]) {
           signAndroidApks (
