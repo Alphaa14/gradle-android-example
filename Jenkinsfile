@@ -4,17 +4,19 @@ pipeline {
     } 
     environment {
         ANDROID_HOME = tool name: 'androidSdk'
-        http_proxy = "http://192.168.130.250:8080"
-        https_proxy = "http://192.168.130.250:8080"
-        no_proxy = "localhost,multicert.inet,multicert.dev,10.10.201.21,forge.multicert.inet,192.168.133.69,192.168.139.60,3WS-frontend,3WS-frontend-internal,3WS,cabus,rabus,pkibo,ssl_ev_oa2,*.multicert.dev,*.pipelines.multicert.dev,192.168.139.63,slave-docker"
-        proxy_ip = "192.168.130.250"
-        proxy_port= "8080"
+        // http_proxy = "http://192.168.130.250:8080"
+        // https_proxy = "http://192.168.130.250:8080"
+        // no_proxy = "localhost,multicert.inet,multicert.dev,10.10.201.21,forge.multicert.inet,192.168.133.69,192.168.139.60,3WS-frontend,3WS-frontend-internal,3WS,cabus,rabus,pkibo,ssl_ev_oa2,*.multicert.dev,*.pipelines.multicert.dev,192.168.139.63,slave-docker"
+        // proxy_ip = "192.168.130.250"
+        // proxy_port= "8080"
     }
      options {
         // Stop the build early in case of compile or test failures
         skipStagesAfterUnstable()
     }
-  
+    tools {
+       gradle "gradle562"
+    }
     stages
     {
     stage("Compile") {
